@@ -1,0 +1,14 @@
+/* Global base overrides — main styles live in src/styles/global.css */
+@import './styles/global.css';
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  text-align: left;
+}
