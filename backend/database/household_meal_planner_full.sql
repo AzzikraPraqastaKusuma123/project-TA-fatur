@@ -1,6 +1,6 @@
 -- =========================================================
 -- DATABASE EXPORT: household_meal_planner
--- Generated At: 2026-10-24T15:08:54.714Z
+-- Generated At: 2026-10-24T15:26:45.745Z
 -- All-in-one Single File: Schema (22 Tabel) + Seed & Data Aktual
 -- Kompatibel: phpMyAdmin, MySQL Workbench, DBeaver, MySQL CLI
 -- =========================================================
@@ -39,7 +39,7 @@ CREATE TABLE `dataset_import_jobs` (
   KEY `triggered_by` (`triggered_by`),
   CONSTRAINT `dataset_import_jobs_ibfk_1` FOREIGN KEY (`dataset_source_id`) REFERENCES `dataset_sources` (`id`) ON DELETE SET NULL,
   CONSTRAINT `dataset_import_jobs_ibfk_2` FOREIGN KEY (`triggered_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------
 -- Table structure for `dataset_sources`
@@ -65,7 +65,7 @@ CREATE TABLE `dataset_sources` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `slug` (`slug`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `dataset_sources` (5 rows)
 INSERT INTO `dataset_sources` (`id`, `name`, `slug`, `type`, `description`, `source_url`, `license`, `version`, `notes`, `status`, `record_count`, `valid_count`, `review_count`, `invalid_count`, `last_imported_at`, `created_at`, `updated_at`) VALUES
@@ -85,7 +85,7 @@ CREATE TABLE `equipment` (
   `description` text,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `equipment` (20 rows)
 INSERT INTO `equipment` (`id`, `name`, `description`, `created_at`) VALUES
@@ -132,7 +132,7 @@ CREATE TABLE `family_members` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `family_members_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `family_members` (3 rows)
 INSERT INTO `family_members` (`id`, `user_id`, `name`, `age`, `gender`, `weight`, `height`, `activity_level`, `daily_calories_target`, `daily_protein_target`, `daily_fat_target`, `daily_carbs_target`, `created_at`, `updated_at`) VALUES
@@ -164,7 +164,7 @@ CREATE TABLE `ingredient_mappings` (
   CONSTRAINT `ingredient_mappings_ibfk_1` FOREIGN KEY (`source_id`) REFERENCES `dataset_sources` (`id`) ON DELETE SET NULL,
   CONSTRAINT `ingredient_mappings_ibfk_2` FOREIGN KEY (`mapped_ingredient_id`) REFERENCES `ingredients` (`id`) ON DELETE SET NULL,
   CONSTRAINT `ingredient_mappings_ibfk_3` FOREIGN KEY (`reviewed_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------
 -- Table structure for `ingredient_nutrition`
@@ -184,7 +184,7 @@ CREATE TABLE `ingredient_nutrition` (
   PRIMARY KEY (`id`),
   KEY `ingredient_id` (`ingredient_id`),
   CONSTRAINT `ingredient_nutrition_ibfk_1` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `ingredient_nutrition` (60 rows)
 INSERT INTO `ingredient_nutrition` (`id`, `ingredient_id`, `calories`, `protein`, `fat`, `carbs`, `source_id`, `per_unit_weight`, `data_status`, `missing_fields`) VALUES
@@ -266,7 +266,7 @@ CREATE TABLE `ingredient_prices` (
   PRIMARY KEY (`id`),
   KEY `ingredient_id` (`ingredient_id`),
   CONSTRAINT `ingredient_prices_ibfk_1` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `ingredient_prices` (60 rows)
 INSERT INTO `ingredient_prices` (`id`, `ingredient_id`, `price`, `created_at`, `updated_at`, `source_id`, `market_area`, `price_date`, `data_status`) VALUES
@@ -348,7 +348,7 @@ CREATE TABLE `ingredients` (
   `data_status` enum('SEED','VALID','NEEDS_REVIEW','INVALID') DEFAULT 'SEED',
   `is_active` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `ingredients` (60 rows)
 INSERT INTO `ingredients` (`id`, `name`, `category`, `unit`, `created_at`, `updated_at`, `source_id`, `source_ref_id`, `aliases`, `data_status`, `is_active`) VALUES
@@ -428,7 +428,7 @@ CREATE TABLE `meal_plan_items` (
   KEY `recipe_id` (`recipe_id`),
   CONSTRAINT `meal_plan_items_ibfk_1` FOREIGN KEY (`meal_plan_id`) REFERENCES `meal_plans` (`id`) ON DELETE CASCADE,
   CONSTRAINT `meal_plan_items_ibfk_2` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------
 -- Table structure for `meal_plans`
@@ -447,7 +447,7 @@ CREATE TABLE `meal_plans` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `meal_plans_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------
 -- Table structure for `optimization_runs`
@@ -466,7 +466,7 @@ CREATE TABLE `optimization_runs` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `optimization_runs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `optimization_runs` (5 rows)
 INSERT INTO `optimization_runs` (`id`, `user_id`, `budget`, `period_days`, `candidate_recipes_count`, `status`, `objective_value`, `processing_time_ms`, `created_at`) VALUES
@@ -489,7 +489,7 @@ CREATE TABLE `recipe_equipment` (
   KEY `equipment_id` (`equipment_id`),
   CONSTRAINT `recipe_equipment_ibfk_1` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON DELETE CASCADE,
   CONSTRAINT `recipe_equipment_ibfk_2` FOREIGN KEY (`equipment_id`) REFERENCES `equipment` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `recipe_equipment` (42 rows)
 INSERT INTO `recipe_equipment` (`id`, `recipe_id`, `equipment_id`) VALUES
@@ -551,7 +551,7 @@ CREATE TABLE `recipe_ingredients` (
   KEY `ingredient_id` (`ingredient_id`),
   CONSTRAINT `recipe_ingredients_ibfk_1` FOREIGN KEY (`recipe_id`) REFERENCES `recipes` (`id`) ON DELETE CASCADE,
   CONSTRAINT `recipe_ingredients_ibfk_2` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `recipe_ingredients` (125 rows)
 INSERT INTO `recipe_ingredients` (`id`, `recipe_id`, `ingredient_id`, `quantity`, `unit`) VALUES
@@ -709,7 +709,7 @@ CREATE TABLE `recipes` (
   `is_active` tinyint(1) DEFAULT '1',
   `image_url` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `recipes` (20 rows)
 INSERT INTO `recipes` (`id`, `name`, `description`, `category`, `meal_type`, `servings`, `cooking_time`, `difficulty`, `instructions`, `total_calories`, `total_protein`, `total_fat`, `total_carbs`, `created_at`, `updated_at`, `source_id`, `source_ref_id`, `data_status`, `nutrition_completeness`, `price_completeness`, `is_active`, `image_url`) VALUES
@@ -751,7 +751,7 @@ CREATE TABLE `shopping_list_items` (
   KEY `ingredient_id` (`ingredient_id`),
   CONSTRAINT `shopping_list_items_ibfk_1` FOREIGN KEY (`shopping_list_id`) REFERENCES `shopping_lists` (`id`) ON DELETE CASCADE,
   CONSTRAINT `shopping_list_items_ibfk_2` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------
 -- Table structure for `shopping_lists`
@@ -767,7 +767,7 @@ CREATE TABLE `shopping_lists` (
   KEY `meal_plan_id` (`meal_plan_id`),
   CONSTRAINT `shopping_lists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `shopping_lists_ibfk_2` FOREIGN KEY (`meal_plan_id`) REFERENCES `meal_plans` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ---------------------------------------------------------
 -- Table structure for `unit_conversions`
@@ -784,7 +784,7 @@ CREATE TABLE `unit_conversions` (
   UNIQUE KEY `uq_conversion` (`from_unit`,`to_unit`,`ingredient_id`),
   KEY `ingredient_id` (`ingredient_id`),
   CONSTRAINT `unit_conversions_ibfk_1` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `unit_conversions` (9 rows)
 INSERT INTO `unit_conversions` (`id`, `from_unit`, `to_unit`, `factor`, `ingredient_id`, `notes`) VALUES
@@ -813,7 +813,7 @@ CREATE TABLE `user_budgets` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_budgets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `user_budgets` (1 rows)
 INSERT INTO `user_budgets` (`id`, `user_id`, `amount`, `period`, `days`, `created_at`, `updated_at`) VALUES
@@ -833,7 +833,7 @@ CREATE TABLE `user_equipment` (
   KEY `equipment_id` (`equipment_id`),
   CONSTRAINT `user_equipment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `user_equipment_ibfk_2` FOREIGN KEY (`equipment_id`) REFERENCES `equipment` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `user_equipment` (9 rows)
 INSERT INTO `user_equipment` (`id`, `user_id`, `equipment_id`, `created_at`) VALUES
@@ -867,7 +867,7 @@ CREATE TABLE `user_inventory` (
   KEY `ingredient_id` (`ingredient_id`),
   CONSTRAINT `user_inventory_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `user_inventory_ibfk_2` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `user_inventory` (9 rows)
 INSERT INTO `user_inventory` (`id`, `user_id`, `ingredient_id`, `quantity`, `unit`, `expiration_date`, `minimum_stock`, `notes`, `created_at`, `updated_at`) VALUES
@@ -896,7 +896,7 @@ CREATE TABLE `user_preferences` (
   KEY `ingredient_id` (`ingredient_id`),
   CONSTRAINT `user_preferences_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `user_preferences_ibfk_2` FOREIGN KEY (`ingredient_id`) REFERENCES `ingredients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `user_preferences` (1 rows)
 INSERT INTO `user_preferences` (`id`, `user_id`, `ingredient_id`, `preference_type`, `created_at`) VALUES
@@ -916,7 +916,7 @@ CREATE TABLE `users` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table `users` (5 rows)
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`, `updated_at`) VALUES

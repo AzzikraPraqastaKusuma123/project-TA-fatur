@@ -29,7 +29,10 @@ async function exportDatabase() {
         sql += `DROP TABLE IF EXISTS \`${tableName}\`;\n`;
 
         const [[createRes]] = await conn.query(`SHOW CREATE TABLE \`${tableName}\``);
-        sql += createRes['Create Table'] + ';\n\n';
+        let createTableSql = createRes['Create Table']
+            .replace(/COLLATE=utf8mb4_0900_ai_ci/g, 'COLLATE=utf8mb4_unicode_ci')
+            .replace(/utf8mb4_0900_ai_ci/g, 'utf8mb4_unicode_ci');
+        sql += createTableSql + ';\n\n';
 
         const [rows] = await conn.query(`SELECT * FROM \`${tableName}\``);
         if (rows.length > 0) {
