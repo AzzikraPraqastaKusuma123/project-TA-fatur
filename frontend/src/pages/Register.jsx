@@ -28,6 +28,9 @@ const Register = () => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || 'Registrasi gagal.');
             await login(form.email, form.password);
+            try {
+                localStorage.setItem('just_registered', 'true');
+            } catch (e) {}
             navigate('/dashboard');
         } catch (err) {
             setError(err.message);
@@ -50,7 +53,13 @@ const Register = () => {
             <div className="auth-card">
                 <div className="auth-header">
                     <div className="auth-logo">
-                        <img src="/logo.jpg" alt="MealPlanner" />
+                        <img
+                            src="/logo.svg"
+                            alt="MealPlanner"
+                            width={48}
+                            height={48}
+                            style={{ borderRadius: 12, display: 'block', filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.15))' }}
+                        />
                         <span className="auth-logo-name">MealPlanner</span>
                     </div>
                     <h1>Buat akun baru</h1>

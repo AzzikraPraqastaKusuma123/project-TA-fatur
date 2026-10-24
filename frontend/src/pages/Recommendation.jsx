@@ -1,15 +1,20 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import PageFeatureGuide from '../components/PageFeatureGuide';
+import { PAGE_GUIDES } from '../data/featureGuidesData';
 import api from '../services/api';
-import { Check, AlertTriangle, ShoppingCart, BarChart2, Info, ChevronDown, ChevronUp, Leaf, Zap, PiggyBank, Sparkles, Clock } from 'lucide-react';
+import {
+    Check, AlertTriangle, ShoppingCart, BarChart2, Info,
+    ChevronDown, ChevronUp, Leaf, Zap, PiggyBank, Clock,
+    SlidersHorizontal, CalendarPlus, Coffee, Sun, Moon, Utensils, Cpu
+} from 'lucide-react';
 
-/* ─── Planning Modes (replacing raw weight inputs) ────────────── */
+/* â”€â”€â”€ Planning Modes (replacing raw weight inputs) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const MODES = [
     {
         id: 'hemat',
         icon: PiggyBank,
-        emoji: '💰',
-        title: 'Mode Hemat',
+                title: 'Mode Hemat',
         subtitle: 'Prioritaskan penghematan biaya',
         desc: 'Cocok untuk anggaran terbatas. Sistem akan mencari kombinasi menu paling terjangkau.',
         color: '#b85c38',
@@ -20,8 +25,7 @@ const MODES = [
     {
         id: 'seimbang',
         icon: Leaf,
-        emoji: '🥗',
-        title: 'Mode Gizi Seimbang',
+                title: 'Mode Gizi Seimbang',
         subtitle: 'Gizi terbaik dalam anggaran',
         desc: 'Pilihan terbaik untuk keluarga. Menyeimbangkan nutrisi optimal dengan harga yang wajar.',
         color: '#2c4a2e',
@@ -32,8 +36,7 @@ const MODES = [
     {
         id: 'praktis',
         icon: Zap,
-        emoji: '⚡',
-        title: 'Mode Praktis',
+                title: 'Mode Praktis',
         subtitle: 'Menu sederhana dan cepat masak',
         desc: 'Untuk ibu yang sibuk. Pilih menu-menu yang tidak berulang dan mudah disiapkan.',
         color: '#1a5f7a',
@@ -44,16 +47,16 @@ const MODES = [
 ];
 
 const LOADING_STEPS = [
-    { label: 'Memeriksa anggaran keluarga…',    icon: '💰' },
-    { label: 'Memilih bahan yang tersedia…',     icon: '🥕' },
-    { label: 'Mencocokkan resep dengan peralatan…', icon: '🍳' },
-    { label: 'Menghitung kombinasi terbaik…',    icon: '🧮' },
-    { label: 'Menyusun jadwal menu…',            icon: '📋' },
-    { label: 'Selesai!',                         icon: '✅' },
+    { label: 'Memeriksa anggaran keluarga...',        step: 1 },
+    { label: 'Memilih bahan yang tersedia...',         step: 2 },
+    { label: 'Mencocokkan resep dengan peralatan...', step: 3 },
+    { label: 'Meracik kombinasi menu bergizi & hemat...', step: 4 },
+    { label: 'Menyusun jadwal menu terstruktur...',   step: 5 },
+    { label: 'Selesai!',                             step: 6 },
 ];
 
 const SLOT_LABEL = { BREAKFAST: 'Sarapan', LUNCH: 'Makan Siang', DINNER: 'Makan Malam' };
-const SLOT_EMOJI = { BREAKFAST: '🍳', LUNCH: '☀️', DINNER: '🌙' };
+const SLOT_ICON = { BREAKFAST: Coffee, LUNCH: Sun, DINNER: Moon };
 const SLOT_COLOR = {
     BREAKFAST: { bg: '#fff7ed', border: '#fed7aa', text: '#c2410c' },
     LUNCH:     { bg: '#f0fdf4', border: '#bbf7d0', text: '#15803d' },
@@ -63,7 +66,7 @@ const SLOT_COLOR = {
 const fmt    = n => `Rp${(n || 0).toLocaleString('id-ID')}`;
 const fmtNum = (n, dec = 1) => Number(n || 0).toFixed(dec);
 
-/* ─── Nutrition Bar ───────────────────────────────────────────── */
+/* â”€â”€â”€ Nutrition Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const NutritionBar = ({ label, actual, target, unit, color }) => {
     const pct     = target > 0 ? Math.min((actual / target) * 100, 130) : 0;
     const isOver  = actual > target * 1.1;
@@ -96,7 +99,7 @@ const NutritionBar = ({ label, actual, target, unit, color }) => {
     );
 };
 
-/* ─── Collapsible Day Row ─────────────────────────────────────── */
+/* â”€â”€â”€ Collapsible Day Row â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const DayRow = ({ day, slots }) => {
     const [open, setOpen] = useState(true);
     const dayTotal = Object.values(day.meals || {}).reduce((s, m) => s + (m?.cost || 0), 0);
@@ -120,6 +123,7 @@ const DayRow = ({ day, slots }) => {
                     {slots.map((slot, si) => {
                         const meal = day.meals?.[slot];
                         const colors = SLOT_COLOR[slot] || {};
+                        const SlotIcon = SLOT_ICON[slot] || Utensils;
                         return (
                             <div key={slot} style={{
                                 padding: '12px 14px',
@@ -127,7 +131,7 @@ const DayRow = ({ day, slots }) => {
                                 background: meal ? 'var(--bg-surface)' : 'var(--bg-root)',
                             }}>
                                 <div style={{
-                                    display: 'inline-flex', alignItems: 'center', gap: 4,
+                                    display: 'inline-flex', alignItems: 'center', gap: 5,
                                     fontSize: 10, fontWeight: 700,
                                     color: colors.text || 'var(--tx-3)',
                                     background: colors.bg || 'var(--bg-hover)',
@@ -135,7 +139,8 @@ const DayRow = ({ day, slots }) => {
                                     borderRadius: 4, padding: '2px 7px',
                                     textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 7,
                                 }}>
-                                    {SLOT_EMOJI[slot]} {SLOT_LABEL[slot]}
+                                    <SlotIcon size={11} strokeWidth={2.2} />
+                                    <span>{SLOT_LABEL[slot]}</span>
                                 </div>
                                 {meal ? (
                                     <>
@@ -158,7 +163,7 @@ const DayRow = ({ day, slots }) => {
     );
 };
 
-/* ─── Mode Card ───────────────────────────────────────────────── */
+/* â”€â”€â”€ Mode Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const ModeCard = ({ mode, selected, onClick }) => {
     const Icon = mode.icon;
     const isSelected = selected === mode.id;
@@ -179,16 +184,14 @@ const ModeCard = ({ mode, selected, onClick }) => {
         >
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 8 }}>
                 <div style={{
-                    width: 42, height: 42, borderRadius: 'var(--r-sm)',
+                    width: 40, height: 40, borderRadius: 'var(--r-sm)',
                     background: isSelected ? mode.color : 'var(--bg-muted)',
+                    border: `1px solid ${isSelected ? mode.color : 'var(--border-color)'}`,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0, fontSize: 20,
-                    transition: 'background 0.18s ease',
+                    flexShrink: 0,
+                    transition: 'all 0.18s ease',
                 }}>
-                    {isSelected
-                        ? <Icon size={20} color="#fff" strokeWidth={2} />
-                        : <span>{mode.emoji}</span>
-                    }
+                    <Icon size={18} color={isSelected ? '#fff' : mode.color} strokeWidth={2} />
                 </div>
                 {isSelected && (
                     <div style={{
@@ -215,7 +218,7 @@ const ModeCard = ({ mode, selected, onClick }) => {
     );
 };
 
-/* ─── Main Page ───────────────────────────────────────────────── */
+/* â”€â”€â”€ Main Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const Recommendation = () => {
     const [loading, setLoading]   = useState(false);
     const [loadStep, setLoadStep] = useState(0);
@@ -259,7 +262,7 @@ const Recommendation = () => {
         } catch (err) {
             const msg         = err.response?.data?.message || 'Gagal menghasilkan rekomendasi.';
             const suggestions = err.response?.data?.suggestions;
-            setError(suggestions ? `${msg}\n\nSaran:\n• ${suggestions.join('\n• ')}` : msg);
+            setError(suggestions ? `${msg}\n\nSaran:\nâ€¢ ${suggestions.join('\nâ€¢ ')}` : msg);
         } finally {
             clearInterval(interval);
             setLoadStep(LOADING_STEPS.length - 1);
@@ -294,7 +297,7 @@ const Recommendation = () => {
             title="Buat Rencana Makan"
             subtitle="Pilih mode yang sesuai, kami yang urus sisanya"
         >
-            {/* ── Anggaran Banner ── */}
+            {/* â”€â”€ Anggaran Banner â”€â”€ */}
             <div style={{ marginBottom: 20 }}>
                 {budget ? (
                     <div style={{
@@ -304,18 +307,18 @@ const Recommendation = () => {
                         borderRadius: 'var(--r-md)',
                     }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                            <span style={{ fontSize: 18 }}>💳</span>
+                            <span style={{ fontSize: 18 }}>ðŸ’³</span>
                             <div>
                                 <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--success)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                     Anggaran Aktif
                                 </div>
                                 <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--tx-1)' }}>
                                     {fmt(budget.amount)}
-                                    <span style={{ fontWeight: 400, color: 'var(--tx-3)', fontSize: 12 }}> untuk {budget.days} hari · {budget.period}</span>
+                                    <span style={{ fontWeight: 400, color: 'var(--tx-3)', fontSize: 12 }}> untuk {budget.days} hari Â· {budget.period}</span>
                                 </div>
                             </div>
                         </div>
-                        <span style={{ fontSize: 11.5, color: 'var(--success)', fontWeight: 600 }}>✓ Siap digunakan</span>
+                        <span style={{ fontSize: 11.5, color: 'var(--success)', fontWeight: 600 }}>âœ“ Siap digunakan</span>
                     </div>
                 ) : (
                     <div style={{
@@ -335,12 +338,12 @@ const Recommendation = () => {
                 )}
             </div>
 
-            {/* ── Step 1: Pilih Mode ── */}
+            {/* â”€â”€ Step 1: Pilih Mode â”€â”€ */}
             <div className="card" style={{ marginBottom: 16 }}>
                 <div className="card-header">
                     <div>
                         <div className="card-title">
-                            <Sparkles size={15} style={{ display: 'inline', marginRight: 6, verticalAlign: 'middle' }} />
+                            <SlidersHorizontal size={15} style={{ display: "inline", marginRight: 6, verticalAlign: "middle" }} />
                             Pilih Mode Perencanaan
                         </div>
                         <div className="card-subtitle">Apa yang paling penting buat keluargamu saat ini?</div>
@@ -355,7 +358,7 @@ const Recommendation = () => {
                 </div>
             </div>
 
-            {/* ── Step 2: Pilih Durasi ── */}
+            {/* â”€â”€ Step 2: Pilih Durasi â”€â”€ */}
             <div className="card" style={{ marginBottom: 20 }}>
                 <div className="card-header">
                     <div>
@@ -371,7 +374,7 @@ const Recommendation = () => {
                         {[
                             { d: 3,  label: '3 hari',  sub: 'Akhir pekan' },
                             { d: 5,  label: '5 hari',  sub: 'Hari kerja' },
-                            { d: 7,  label: '1 minggu', sub: 'Populer ⭐' },
+                            { d: 7,  label: '1 minggu', sub: 'Rekomendasi' },
                             { d: 10, label: '10 hari',  sub: '' },
                             { d: 14, label: '2 minggu', sub: 'Terhemat' },
                         ].map(({ d, label, sub }) => (
@@ -413,7 +416,7 @@ const Recommendation = () => {
                             {loading ? (
                                 <><span className="spinner" style={{ borderTopColor: '#fff' }} /> Sedang memproses...</>
                             ) : (
-                                <><Sparkles size={17} /> Buat Rencana {selMode?.title}</>
+                                <><CalendarPlus size={16} /> Buat Rencana {selMode?.title}</>
                             )}
                         </button>
                         {result && !loading && (
@@ -431,8 +434,9 @@ const Recommendation = () => {
                             borderRadius: 'var(--r-md)',
                             border: `1px solid ${selMode?.border || 'var(--primary-soft)'}`,
                         }}>
-                            <div style={{ fontSize: 12.5, fontWeight: 700, color: selMode?.color || 'var(--primary)', marginBottom: 14 }}>
-                                🍽️ Sedang menyusun rencana terbaik untuk keluargamu…
+                            <div style={{ fontSize: 12.5, fontWeight: 700, color: selMode?.color || 'var(--primary)', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 6 }}>
+                                <Cpu size={14} />
+                                <span>Sedang menyusun rencana terbaik untuk keluargamu...</span>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                                 {LOADING_STEPS.map((step, i) => (
@@ -451,7 +455,7 @@ const Recommendation = () => {
                                             ) : i === loadStep ? (
                                                 <span className="spinner" style={{ width: 12, height: 12, borderWidth: 1.5, borderTopColor: '#fff', borderColor: 'rgba(255,255,255,0.3)' }} />
                                             ) : (
-                                                <span style={{ fontSize: 10 }}>{step.icon}</span>
+                                                <span style={{ fontSize: 10, fontWeight: 700, color: "var(--tx-3)" }}>{i + 1}</span>
                                             )}
                                         </div>
                                         <span style={{ fontSize: 13, fontWeight: i === loadStep ? 600 : 400,
@@ -477,7 +481,7 @@ const Recommendation = () => {
                 </div>
             </div>
 
-            {/* ── HASIL ── */}
+            {/* â”€â”€ HASIL â”€â”€ */}
             {result && (
                 <div>
                     {/* Summary bar */}
@@ -486,13 +490,13 @@ const Recommendation = () => {
                     }}>
                         {[
                             {
-                                emoji: '💰', label: 'Total Biaya Estimasi',
+                                emoji: 'ðŸ’°', label: 'Total Biaya Estimasi',
                                 value: fmt(result.totalCost),
                                 sub: `Sisa anggaran: ${fmt(result.budgetRemaining)}`,
                                 color: 'var(--success)', bg: 'var(--success-bg)', border: 'var(--success-border)',
                             },
                             {
-                                emoji: '✅', label: 'Status Rencana',
+                                emoji: 'âœ…', label: 'Status Rencana',
                                 value: result.status === 'OPTIMAL' ? 'Rencana Optimal' : 'Rencana Layak',
                                 sub: result.validationPassed ? 'Semua kebutuhan terpenuhi' : 'Ada beberapa catatan',
                                 color: result.validationPassed ? 'var(--info)' : 'var(--warning)',
@@ -500,7 +504,7 @@ const Recommendation = () => {
                                 border: result.validationPassed ? 'var(--info-border)' : 'var(--warning-border)',
                             },
                             {
-                                emoji: '🍽️', label: 'Total Menu Unik',
+                                emoji: 'ðŸ½ï¸', label: 'Total Menu Unik',
                                 value: `${result.candidateCount} resep`,
                                 sub: `Diproses dalam ${result.performance?.totalTime || 0}ms`,
                                 color: 'var(--tx-2)', bg: 'var(--bg-muted)', border: 'var(--border-color)',
@@ -525,7 +529,7 @@ const Recommendation = () => {
                     <div className="card" style={{ marginBottom: 16 }}>
                         <div className="card-header">
                             <div>
-                                <div className="card-title">📅 Jadwal Menu {days} Hari</div>
+                                <div className="card-title">ðŸ“… Jadwal Menu {days} Hari</div>
                                 <div className="card-subtitle">Klik setiap hari untuk melihat detail menu</div>
                             </div>
                             <span className="badge badge-primary">{selMode?.title}</span>
@@ -574,7 +578,7 @@ const Recommendation = () => {
                                         Daftar Belanja
                                     </div>
                                     <div className="card-subtitle">
-                                        {result.shoppingList.length} item perlu dibeli · Total: {fmt(result.shoppingList.reduce((s, i) => s + i.estimated_cost, 0))}
+                                        {result.shoppingList.length} item perlu dibeli Â· Total: {fmt(result.shoppingList.reduce((s, i) => s + i.estimated_cost, 0))}
                                     </div>
                                 </div>
                             </div>
@@ -625,7 +629,7 @@ const Recommendation = () => {
                             border: '1px solid var(--border-color)',
                         }}>
                             <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--tx-3)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: 6 }}>
-                                💡 Catatan Sistem
+                                ðŸ’¡ Catatan Sistem
                             </div>
                             <p style={{ fontSize: 12.5, color: 'var(--tx-2)', lineHeight: 1.7, margin: 0 }}>
                                 {result.explanation}
@@ -642,7 +646,7 @@ const Recommendation = () => {
                             style={{ width: '100%', justifyContent: 'center' }}
                         >
                             {saving
-                                ? <><span className="spinner" /> Menyimpan jadwal…</>
+                                ? <><span className="spinner" /> Menyimpan jadwalâ€¦</>
                                 : <><Check size={18} /> Simpan Sebagai Jadwal Aktif</>
                             }
                         </button>
@@ -650,7 +654,7 @@ const Recommendation = () => {
                         <div className="alert alert-success">
                             <Check size={16} style={{ flexShrink: 0 }} />
                             <div>
-                                <strong style={{ display: 'block', marginBottom: 2 }}>Jadwal berhasil disimpan! 🎉</strong>
+                                <strong style={{ display: 'block', marginBottom: 2 }}>Jadwal berhasil disimpan! ðŸŽ‰</strong>
                                 Rencana makan sudah aktif. Lihat di menu <a href="/meal-plans" style={{ color: 'inherit', fontWeight: 700, textDecoration: 'underline' }}>Jadwal Makan</a>.
                             </div>
                         </div>
@@ -659,8 +663,11 @@ const Recommendation = () => {
             )}
 
 
+            {/* -- Panduan Fitur Tertanam -- */}
+            <PageFeatureGuide guide={PAGE_GUIDES['/recommendation']} />
         </Layout>
     );
 };
 
 export default Recommendation;
+

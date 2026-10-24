@@ -31,13 +31,26 @@ const getDashboardStats = async (req, res) => {
             ORDER BY mpi.day_date, mpi.meal_slot
             LIMIT 9`, [userId]);
 
+        // Family members
+        const [familyMembers] = await db.query('SELECT * FROM family_members WHERE user_id=? ORDER BY id ASC', [userId]);
+
+        // Preferences
+        const [preferences] = await db.query(`
+            SELECT up.*, i.name AS ingredient_name, i.category
+            FROM user_preferences up
+            JOIN ingredients i ON up.ingredient_id = i.id
+            WHERE up.user_id = ?
+            ORDER BY up.id DESC`, [userId]);
+
         res.json({
             success: true, data: {
                 total_inventory,
                 low_stock,
                 active_plans,
                 total_recipes,
-                family_count,
+                family_count: familyMembers.length,
+                family_members: familyMembers,
+                preferences,
                 budget: budget_row || null,
                 recent_plan: recentPlan[0] || null,
                 low_stock_items: lowStockItems,

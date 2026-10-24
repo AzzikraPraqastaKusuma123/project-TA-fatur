@@ -1,5 +1,5 @@
 /* ================================================================
-   FATRUR — EDITORIAL FOOD-TECH DESIGN SYSTEM
+   MealPlanner — EDITORIAL FOOD-TECH DESIGN SYSTEM
    Direction: Warm, Natural, Minimalist, Premium
    Inspired by: Yummly, Whisk, NYT Cooking — not SaaS dashboards
    ================================================================ */
@@ -76,8 +76,9 @@
   --border-error:   var(--danger);
 
   /* ── Layout ── */
-  --sidebar-w:    256px;
-  --topbar-h:     60px;
+  --sidebar-w:            256px;
+  --sidebar-w-collapsed:  72px;
+  --topbar-h:             60px;
 
   /* ── Spacing Scale (4px base) ── */
   --sp-1:  4px;
@@ -268,6 +269,7 @@ ul, ol {
   min-height: 100vh;
   min-width: 0;
   background: var(--bg-root);
+  transition: margin-left var(--t-base);
 }
 
 .page-body {
@@ -294,13 +296,97 @@ ul, ol {
   display: flex;
   flex-direction: column;
   z-index: 200;
-  transition: transform var(--t-base), background var(--t-slow);
+  transition: width var(--t-base), transform var(--t-base), background var(--t-slow);
   overflow: hidden;
+}
+
+/* ── Collapsed Sidebar (Desktop) ── */
+.app-layout.sidebar-collapsed .sidebar {
+  width: var(--sidebar-w-collapsed);
+}
+
+.app-layout.sidebar-collapsed .main-content {
+  margin-left: var(--sidebar-w-collapsed);
+}
+
+.app-layout.sidebar-collapsed .sidebar-header {
+  padding: 16px 8px 12px;
+  justify-content: center;
+}
+
+.app-layout.sidebar-collapsed .sidebar-brand {
+  justify-content: center;
+  width: 100%;
+}
+
+.app-layout.sidebar-collapsed .sidebar-brand-name {
+  display: none !important;
+}
+
+.app-layout.sidebar-collapsed .sidebar-collapse-toggle {
+  display: none !important;
+}
+
+.app-layout.sidebar-collapsed .sidebar-divider {
+  margin: 0 10px 8px;
+}
+
+.app-layout.sidebar-collapsed .nav-section-label {
+  display: none !important;
+}
+
+.app-layout.sidebar-collapsed .nav-item {
+  justify-content: center;
+  padding: 10px 0;
+  width: 44px;
+  margin: 4px auto;
+  border-radius: var(--r-sm);
+  position: relative;
+}
+
+.app-layout.sidebar-collapsed .nav-item .nav-label {
+  display: none !important;
+}
+
+.app-layout.sidebar-collapsed .nav-icon {
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  opacity: 0.85;
+}
+
+.app-layout.sidebar-collapsed .sidebar-footer {
+  padding: 10px 6px;
+}
+
+.app-layout.sidebar-collapsed .sidebar-footer .nav-item {
+  width: 44px;
+  margin: 0 auto 8px;
+}
+
+.app-layout.sidebar-collapsed .user-row {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 0;
+  gap: 8px;
+}
+
+.app-layout.sidebar-collapsed .user-info {
+  display: none !important;
+}
+
+.app-layout.sidebar-collapsed .btn-logout {
+  width: 32px;
+  height: 32px;
 }
 
 .sidebar-header {
   padding: 20px 20px 12px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .sidebar-brand {
@@ -482,8 +568,53 @@ ul, ol {
   gap: var(--sp-2);
 }
 
-/* Mobile toggle */
-.mobile-toggle { display: none; }
+/* ── Sidebar Toggle Buttons (Desktop + Mobile) ── */
+.sidebar-toggle-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  color: var(--tx-2);
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-fast);
+  border: 1px solid var(--border-color);
+  background: var(--bg-surface);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.sidebar-toggle-btn:hover {
+  background: var(--bg-hover);
+  color: var(--primary);
+  border-color: var(--primary-soft);
+  transform: translateY(-1px);
+}
+.sidebar-toggle-btn:active {
+  transform: translateY(0);
+}
+
+.sidebar-collapse-toggle {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-xs);
+  color: var(--tx-3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t-fast);
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.sidebar-collapse-toggle:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary-soft);
+}
+
+/* Mobile toggle fallback */
+.mobile-toggle { display: flex !important; }
 
 /* ──────────────────────────────────────────────────────────────
    ICON BUTTON
@@ -1256,12 +1387,50 @@ tr:hover td { background: var(--bg-hover); }
 @media (max-width: 1024px) {
   .sidebar {
     transform: translateX(-100%);
+    width: var(--sidebar-w) !important;
     transition: transform var(--t-base);
   }
   .sidebar.open { transform: translateX(0); }
 
-  .main-content { margin-left: 0; }
+  .main-content { margin-left: 0 !important; }
   .mobile-toggle { display: flex !important; }
+
+  /* Mobile drawer overrides regardless of collapsed state */
+  .app-layout.sidebar-collapsed .sidebar {
+    width: var(--sidebar-w) !important;
+  }
+  .app-layout.sidebar-collapsed .main-content {
+    margin-left: 0 !important;
+  }
+  .app-layout.sidebar-collapsed .sidebar-brand-name {
+    display: inline-block !important;
+  }
+  .app-layout.sidebar-collapsed .nav-section-label {
+    display: block !important;
+  }
+  .app-layout.sidebar-collapsed .nav-item {
+    justify-content: flex-start !important;
+    width: auto !important;
+    padding: 9px 10px !important;
+    margin: 0 0 1px 0 !important;
+  }
+  .app-layout.sidebar-collapsed .nav-item .nav-label {
+    display: inline !important;
+  }
+  .app-layout.sidebar-collapsed .user-row {
+    flex-direction: row !important;
+    padding: 9px 10px !important;
+  }
+  .app-layout.sidebar-collapsed .user-info {
+    display: block !important;
+  }
+  .app-layout.sidebar-collapsed .sidebar-header {
+    padding: 20px 20px 12px !important;
+    justify-content: space-between !important;
+  }
+  .app-layout.sidebar-collapsed .sidebar-brand {
+    justify-content: flex-start !important;
+  }
 
   .page-body {
     padding: 16px 16px 80px; /* bottom padding for mobile nav */
@@ -1318,8 +1487,374 @@ tr:hover td { background: var(--bg-hover); }
 }
 
 /* ──────────────────────────────────────────────────────────────
-   AUTH PAGES (Login / Register)
+   AUTH PAGES — Premium Split Layout
    ────────────────────────────────────────────────────────────── */
+
+/* ── Root split container ─────────────────────────────────── */
+.auth-split-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ── LEFT PANEL ───────────────────────────────────────────── */
+.auth-split-left {
+  position: relative;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  background: linear-gradient(145deg, #142817 0%, #1e3d23 45%, #2a5230 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 40px;
+}
+.auth-split-left::-webkit-scrollbar {
+  display: none;
+}
+
+/* Decorative blobs */
+.auth-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+}
+.auth-blob-1 {
+  width: 320px;
+  height: 320px;
+  background: rgba(74, 124, 89, 0.45);
+  top: -80px;
+  right: -60px;
+}
+.auth-blob-2 {
+  width: 240px;
+  height: 240px;
+  background: rgba(184, 92, 56, 0.18);
+  bottom: -60px;
+  left: -40px;
+}
+
+.auth-split-left-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Brand mark */
+.auth-brand-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.auth-brand-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+/* Headline block */
+.auth-split-headline h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+}
+
+.auth-split-headline p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.5;
+}
+
+/* Feature list */
+.auth-feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-feature-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 500;
+}
+
+.auth-feature-check {
+  color: #95d5b2;
+  flex-shrink: 0;
+}
+
+/* Decorative food card */
+.auth-food-card {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.auth-food-day-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 12px;
+}
+
+.auth-food-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.auth-food-item {
+  font-size: 13.5px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+.auth-food-stats {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-food-stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #95d5b2;
+  font-weight: 600;
+}
+
+.auth-food-stat-sep {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.auth-food-stat-text {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ── RIGHT PANEL ──────────────────────────────────────────── */
+.auth-split-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-root);
+  padding: 40px 24px;
+  overflow-y: auto;
+}
+
+.auth-theme-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.auth-form-wrap {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Mobile logo (only visible on small screens) */
+.auth-mobile-logo {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+.auth-mobile-logo .auth-brand-name {
+  color: var(--tx-1);
+  font-size: 18px;
+}
+
+/* Form header */
+.auth-form-header {
+  margin-bottom: 28px;
+}
+
+.auth-form-title {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--tx-1);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.auth-form-subtitle {
+  font-size: 14px;
+  color: var(--tx-3);
+  line-height: 1.5;
+}
+
+/* Alert */
+.auth-alert {
+  margin-bottom: 20px;
+}
+
+/* Form */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.auth-form .form-group {
+  margin-bottom: 18px;
+}
+
+/* Label row with forgot link */
+.auth-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.auth-label-row .form-label {
+  margin-bottom: 0;
+}
+
+.auth-forgot-link {
+  font-size: 12px;
+  color: var(--tx-3);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.auth-forgot-link:hover {
+  color: var(--primary);
+}
+
+/* Eye toggle button */
+.auth-eye-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--tx-4);
+  padding: 4px;
+  line-height: 0;
+  transition: color 0.15s;
+}
+.auth-eye-btn:hover { color: var(--tx-2); }
+
+/* Submit button */
+.auth-submit-btn {
+  justify-content: center;
+  margin-top: 4px;
+  gap: 8px;
+  font-size: 15px;
+  height: 46px;
+  border-radius: var(--r-md);
+}
+
+/* Divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.auth-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border-color);
+}
+
+.auth-divider-text {
+  font-size: 12px;
+  color: var(--tx-4);
+  white-space: nowrap;
+}
+
+/* CTA link */
+.auth-cta-text {
+  text-align: center;
+  font-size: 13.5px;
+  color: var(--tx-3);
+}
+
+.auth-cta-link {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 1.5px solid var(--primary-soft);
+  padding-bottom: 1px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.auth-cta-link:hover {
+  color: var(--primary-mid);
+  border-color: var(--primary);
+}
+
+/* Demo credentials box */
+.auth-demo-box {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 10px 14px;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-color);
+  border-radius: var(--r-sm);
+  font-size: 11.5px;
+}
+
+.auth-demo-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--tx-4);
+  margin-right: 2px;
+}
+
+.auth-demo-box code {
+  font-family: 'Menlo', 'Consolas', monospace;
+  font-size: 11.5px;
+  color: var(--tx-2);
+  background: var(--bg-active);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.auth-demo-sep {
+  color: var(--tx-4);
+  font-size: 11px;
+}
+
+/* ── Legacy aliases (kept for backward compatibility) ────── */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -1359,6 +1894,44 @@ tr:hover td { background: var(--bg-hover); }
   color: var(--tx-3);
   margin-bottom: 28px;
 }
+
+/* ── RESPONSIVE: collapse to single column on tablet / mobile */
+@media (max-width: 900px) {
+  .auth-split-page {
+    grid-template-columns: 1fr;
+    min-height: 100vh;
+  }
+
+  .auth-split-left {
+    display: none; /* hide decorative panel on mobile */
+  }
+
+  .auth-split-right {
+    min-height: 100vh;
+    padding: 32px 24px;
+  }
+
+  .auth-mobile-logo {
+    display: flex;
+  }
+
+  .auth-form-wrap {
+    max-width: 440px;
+  }
+}
+
+@media (max-width: 640px) {
+  .auth-split-right {
+    padding: 24px 16px;
+    align-items: flex-start;
+    padding-top: 48px;
+  }
+
+  .auth-form-title {
+    font-size: 22px;
+  }
+}
+
 
 /* ──────────────────────────────────────────────────────────────
    SPINNER

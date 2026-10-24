@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useLocation, NavLink } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import SpotlightTour from './SpotlightTour';
+import FeatureGuideModal from './FeatureGuideModal';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import {
     Menu, Moon, Sun, LayoutDashboard, CalendarDays,
-    ShoppingCart, Lightbulb, User
+    ShoppingCart, Lightbulb, User, BookOpen,
+    PanelLeftClose, PanelLeftOpen
 } from 'lucide-react';
 
 /* ─── Mobile Bottom Nav — 5 most used pages ─────────────── */
@@ -71,7 +75,17 @@ const BottomNav = () => {
 const Layout = ({ children, title, subtitle, actions }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isMobile, setIsMobile]       = useState(window.innerWidth <= 1024);
+    const [isCollapsed, setIsCollapsed] = useState(() => {
+        try {
+            return localStorage.getItem('mealplanner_sidebar_collapsed') === 'true';
+        } catch {
+            return false;
+        }
+    });
+    const [showTour, setShowTour]       = useState(false);
+    const [showGuide, setShowGuide]     = useState(false);
     const { theme, toggleTheme }        = useTheme();
+    const { user }                      = useAuth();
     const location                      = useLocation();
 
     useEffect(() => { setSidebarOpen(false); }, [location.pathname]);
@@ -91,8 +105,36 @@ const Layout = ({ children, title, subtitle, actions }) => {
         return () => { document.body.style.overflow = ''; };
     }, [isMobile, sidebarOpen]);
 
+    const handleToggleSidebar = () => {
+        if (isMobile) {
+            setSidebarOpen(prev => !prev);
+        } else {
+            setIsCollapsed(prev => {
+                const next = !prev;
+                try {
+                    localStorage.setItem('mealplanner_sidebar_collapsed', String(next));
+                } catch (e) {}
+                return next;
+            });
+        }
+    };
+
+    // Auto-open spotlight walkthrough for freshly registered users who haven't seen it yet
+    useEffect(() => {
+        if (!user?.id) return;
+        try {
+            const justRegistered = localStorage.getItem('just_registered') === 'true';
+            const hasSeen = localStorage.getItem(`onboarding_seen_${user.id}`) === 'true';
+            if (justRegistered && !hasSeen) {
+                setShowTour(true);
+            }
+        } catch (e) {
+            console.warn(e);
+        }
+    }, [user?.id]);
+
     return (
-        <div className="app-layout">
+        <div className={`app-layout ${!isMobile && isCollapsed ? 'sidebar-collapsed' : ''}`}>
             {/* Sidebar backdrop (mobile) */}
             {isMobile && sidebarOpen && (
                 <div
@@ -110,6 +152,8 @@ const Layout = ({ children, title, subtitle, actions }) => {
             <Sidebar
                 isOpen={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
+                isCollapsed={!isMobile && isCollapsed}
+                onToggleCollapse={handleToggleSidebar}
             />
 
             <div className="main-content">
@@ -117,11 +161,19 @@ const Layout = ({ children, title, subtitle, actions }) => {
                 <header className="topbar">
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <button
-                            className="icon-btn mobile-toggle"
-                            onClick={() => setSidebarOpen(true)}
-                            title="Buka menu"
+                            type="button"
+                            className="sidebar-toggle-btn"
+                            onClick={handleToggleSidebar}
+                            title={isMobile ? "Buka menu navigasi" : (isCollapsed ? "Perbesar menu (Sidebar)" : "Perkecil menu (Sidebar)")}
+                            aria-label="Toggle Sidebar"
                         >
-                            <Menu size={18} strokeWidth={2} />
+                            {isMobile ? (
+                                <Menu size={18} strokeWidth={2} />
+                            ) : isCollapsed ? (
+                                <PanelLeftOpen size={18} strokeWidth={2} />
+                            ) : (
+                                <PanelLeftClose size={18} strokeWidth={2} />
+                            )}
                         </button>
 
                         {title && (
@@ -135,6 +187,18 @@ const Layout = ({ children, title, subtitle, actions }) => {
                     </div>
 
                     <div className="topbar-right">
+                        {/* Panduan Fitur Button — kontekstual per halaman */}
+                        <button
+                            type="button"
+                            className="onboarding-topbar-btn"
+                            data-tour="help-button"
+                            onClick={() => setShowGuide(true)}
+                            title="Buka Panduan Fitur Halaman Ini"
+                        >
+                            <BookOpen size={13} strokeWidth={2} />
+                            <span className="onboarding-btn-text">Panduan Fitur</span>
+                        </button>
+
                         {/* Page actions (desktop only) */}
                         {actions && (
                             <div className="actions-desktop" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -176,7 +240,46 @@ const Layout = ({ children, title, subtitle, actions }) => {
 
             {isMobile && <BottomNav />}
 
+            {/* ── Feature Guide Modal (Kontekstual per Halaman) ── */}
+            <FeatureGuideModal
+                isOpen={showGuide}
+                onClose={() => setShowGuide(false)}
+            />
+
+            {/* ── Interactive Spotlight Tour Layer (Onboarding) ── */}
+            <SpotlightTour
+                isOpen={showTour}
+                onClose={() => setShowTour(false)}
+                user={user}
+            />
+
             <style>{`
+                .onboarding-topbar-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 6px 12px;
+                    border-radius: var(--r-sm, 8px);
+                    border: 1px solid var(--border-color, #e2e8f0);
+                    background: var(--bg-surface, #ffffff);
+                    color: var(--tx-1, #0f172a);
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.15s ease;
+                }
+                .onboarding-topbar-btn:hover {
+                    background: var(--bg-hover, #f1f5f9);
+                    border-color: var(--primary, #15803d);
+                    color: var(--primary, #15803d);
+                }
+                .onboarding-topbar-btn svg {
+                    color: var(--primary, #15803d);
+                }
+                @media (max-width: 640px) {
+                    .onboarding-btn-text { display: none; }
+                    .onboarding-topbar-btn { padding: 6px 8px; }
+                }
                 @media (max-width: 1024px) {
                     .actions-desktop { display: none !important; }
                 }

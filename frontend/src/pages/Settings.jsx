@@ -1,5 +1,7 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import Layout from '../components/Layout';
+import PageFeatureGuide from '../components/PageFeatureGuide';
+import { PAGE_GUIDES } from '../data/featureGuidesData';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import api from '../services/api';
@@ -11,7 +13,7 @@ const TAB_LIST = [
     { id: 'appearance',icon: Sun,     label: 'Tampilan'   },
 ];
 
-/* ─── Tab: Profile ─────────────────────────────────────── */
+/* â”€â”€â”€ Tab: Profile â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const ProfileTab = ({ user, onUpdated }) => {
     const [name, setName]     = useState(user?.name || '');
     const [saving, setSaving] = useState(false);
@@ -97,7 +99,7 @@ const ProfileTab = ({ user, onUpdated }) => {
     );
 };
 
-/* ─── Tab: Security ────────────────────────────────────── */
+/* â”€â”€â”€ Tab: Security â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const SecurityTab = () => {
     const [form, setForm]     = useState({ password: '', confirm: '' });
     const [show, setShow]     = useState(false);
@@ -132,7 +134,7 @@ const SecurityTab = () => {
                 borderRadius: 'var(--r-sm)', fontSize: 13, color: 'var(--blue)',
                 lineHeight: 1.55,
             }}>
-                Gunakan password yang kuat — minimal 6 karakter, kombinasi huruf dan angka.
+                Gunakan password yang kuat â€” minimal 6 karakter, kombinasi huruf dan angka.
             </div>
 
             {msg && (
@@ -206,7 +208,7 @@ const SecurityTab = () => {
     );
 };
 
-/* ─── Tab: Appearance ──────────────────────────────────── */
+/* â”€â”€â”€ Tab: Appearance â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const AppearanceTab = () => {
     const { theme, toggleTheme } = useTheme();
 
@@ -291,7 +293,7 @@ const AppearanceTab = () => {
     );
 };
 
-/* ─── Main Page ────────────────────────────────────────── */
+/* â”€â”€â”€ Main Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const Settings = () => {
     const { user } = useAuth();
     const [tab, setTab] = useState('profile');
@@ -343,8 +345,11 @@ const Settings = () => {
                     </div>
                 </div>
             </div>
+            {/* -- Panduan Fitur Tertanam -- */}
+            <PageFeatureGuide guide={PAGE_GUIDES['/settings']} />
         </Layout>
     );
 };
 
 export default Settings;
+

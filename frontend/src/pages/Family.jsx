@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import PageFeatureGuide from '../components/PageFeatureGuide';
 import api from '../services/api';
+import { PAGE_GUIDES } from '../data/featureGuidesData';
 import { Plus, Pencil, Trash2, Users } from 'lucide-react';
 
 const ACTIVITY = {
@@ -287,6 +289,8 @@ const Family = () => {
                     </div>
                 </div>
             )}
+            {/* ── Panduan Fitur Tertanam ── */}
+            <PageFeatureGuide guide={PAGE_GUIDES['/family']} />
         </Layout>
     );
 };

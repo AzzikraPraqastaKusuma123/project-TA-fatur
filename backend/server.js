@@ -44,6 +44,8 @@ app.use('/api/recommendations', require('./routes/recommendations'));
 app.use('/api/dashboard',       require('./routes/dashboard'));
 app.use('/api/admin',           require('./routes/admin'));
 app.use('/api/dataset',         require('./routes/dataset'));   // Dataset Management
+app.use('/api/nutrition',       require('./routes/nutrition'));  // Nutrition Tracker
+app.use('/api/analytics',       require('./routes/analytics')); // Analytics & Reporting
 
 // Ensure tmp_uploads dir exists
 const tmpDir = path.join(__dirname, 'tmp_uploads');

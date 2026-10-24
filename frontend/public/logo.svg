@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <!-- Background Gradient (Lush Deep Forest to Emerald) -->
+    <linearGradient id="bgGradient" x1="48" y1="32" x2="464" y2="480" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#142c17"/>
+      <stop offset="50%"  stop-color="#1f4424"/>
+      <stop offset="100%" stop-color="#2d5e34"/>
+    </linearGradient>
+
+    <!-- Top Gloss Highlight -->
+    <linearGradient id="glossGrad" x1="256" y1="24" x2="256" y2="280" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Ambient Center Glow -->
+    <radialGradient id="centerGlow" cx="50%" cy="54%" r="42%">
+      <stop offset="0%"   stop-color="#52b788" stop-opacity="0.32"/>
+      <stop offset="65%"  stop-color="#2d5e34" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#142c17" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Primary Leaf Gradient (Vibrant Emerald to Mint) -->
+    <linearGradient id="mainLeafGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#1b4332"/>
+      <stop offset="40%"  stop-color="#2d6a4f"/>
+      <stop offset="80%"  stop-color="#52b788"/>
+      <stop offset="100%" stop-color="#95d5b2"/>
+    </linearGradient>
+
+    <!-- Secondary Leaf Gradient (Fresh Mint) -->
+    <linearGradient id="subLeafGrad" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#2d6a4f"/>
+      <stop offset="60%"  stop-color="#52b788"/>
+      <stop offset="100%" stop-color="#b7e4c7"/>
+    </linearGradient>
+
+    <!-- Warm Nutrition / Vitality Accent (Sunlit Terracotta & Amber) -->
+    <linearGradient id="warmSunGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#fca311"/>
+      <stop offset="45%"  stop-color="#f77f00"/>
+      <stop offset="100%" stop-color="#d62828"/>
+    </linearGradient>
+
+    <!-- Porcelain Bowl Gradient -->
+    <linearGradient id="bowlGrad" x1="256" y1="240" x2="256" y2="350" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#ffffff"/>
+      <stop offset="80%"  stop-color="#f0f7f1"/>
+      <stop offset="100%" stop-color="#d8e8dc"/>
+    </linearGradient>
+
+    <!-- Rim Highlight -->
+    <linearGradient id="rimGrad" x1="140" y1="256" x2="372" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#e2eee4"/>
+      <stop offset="50%"  stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#d0e2d3"/>
+    </linearGradient>
+
+    <!-- Steam Gradient -->
+    <linearGradient id="steamGrad" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.15"/>
+    </linearGradient>
+
+    <!-- Drop Shadow for Central Icon -->
+    <filter id="iconShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#081409" flood-opacity="0.55"/>
+      <feDropShadow dx="0" dy="4"  stdDeviation="6"  flood-color="#081409" flood-opacity="0.3"/>
+    </filter>
+
+    <!-- Subtle Glow for Accent Badge -->
+    <filter id="badgeGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#f77f00" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- ── SQUIRCLE APP ICON BASE ── -->
+  <!-- Base background shadow -->
+  <rect x="20" y="20" width="472" height="472" rx="112" ry="112" fill="url(#bgGradient)"/>
+
+  <!-- Radial ambient glow behind emblem -->
+  <rect x="20" y="20" width="472" height="472" rx="112" ry="112" fill="url(#centerGlow)"/>
+
+  <!-- Subtle glass glossy highlight upper curve -->
+  <rect x="20" y="20" width="472" height="236" rx="112" ry="112" fill="url(#glossGrad)"/>
+
+  <!-- Inset glass rim border -->
+  <rect x="21.5" y="21.5" width="469" height="469" rx="110.5" ry="110.5"
+        stroke="#ffffff" stroke-width="3" stroke-opacity="0.18" fill="none"/>
+
+  <!-- ── NUTRITION BALANCE ORBIT (Subtle Tech Ring) ── -->
+  <g opacity="0.32">
+    <!-- Outer dashed balance ring -->
+    <circle cx="256" cy="276" r="148"
+            stroke="#95d5b2" stroke-width="2" stroke-dasharray="6 8" fill="none"/>
+    <!-- Small planetary node dots -->
+    <circle cx="256" cy="128" r="4.5" fill="#95d5b2"/>
+    <circle cx="404" cy="276" r="4.5" fill="#95d5b2"/>
+    <circle cx="108" cy="276" r="4.5" fill="#95d5b2"/>
+  </g>
+
+  <!-- ── MAIN EMBLEM: BOWL, SPROUT LEAF, STEAM ── -->
+  <g filter="url(#iconShadow)">
+
+    <!-- Bowl Shadow beneath foot -->
+    <ellipse cx="256" cy="358" rx="122" ry="14" fill="#08160a" opacity="0.5"/>
+
+    <!-- ── CULINARY BOWL BODY ── -->
+    <!-- Bowl silhouette with soft rounded bottom -->
+    <path d="M 142 256
+             C 144 326, 200 350, 256 350
+             C 312 350, 368 326, 370 256
+             Z"
+          fill="url(#bowlGrad)"/>
+
+    <!-- Bowl Rim (horizontal oval perspective) -->
+    <ellipse cx="256" cy="256" rx="114" ry="22" fill="url(#rimGrad)"/>
+
+    <!-- Bowl Inner Depth Cavity -->
+    <ellipse cx="256" cy="258" rx="98" ry="15" fill="#1e4624" opacity="0.85"/>
+    <ellipse cx="256" cy="260" rx="90" ry="12" fill="#2d5e34" opacity="0.6"/>
+
+    <!-- Bowl Foot / Base Pedestal -->
+    <path d="M 230 348 L 222 360 C 238 363, 274 363, 290 360 L 282 348 Z"
+          fill="#d8e8dc"/>
+    <ellipse cx="256" cy="360" rx="34" ry="5" fill="#ffffff" opacity="0.9"/>
+
+    <!-- Bowl Front Specular Highlight Curve -->
+    <path d="M 168 274
+             C 186 322, 230 336, 256 336"
+          stroke="#ffffff" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.55"/>
+
+    <!-- ── TWIN ORGANIC SPROUT LEAVES (Heart of Nutrition) ── -->
+    <!-- Main Upward Leaf (Graceful curve reaching high) -->
+    <path d="M 256 254
+             C 246 200, 212 160, 238 126
+             C 278 126, 294 184, 256 254 Z"
+          fill="url(#mainLeafGrad)"/>
+
+    <!-- Main Leaf Center Vein -->
+    <path d="M 256 254 C 252 208, 246 166, 240 134"
+          stroke="#b7e4c7" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
+
+    <!-- Secondary Accent Leaf (Arching gently right) -->
+    <path d="M 256 248
+             C 268 226, 316 220, 324 178
+             C 292 176, 268 206, 256 248 Z"
+          fill="url(#subLeafGrad)"/>
+
+    <!-- Secondary Leaf Vein -->
+    <path d="M 258 244 C 274 224, 298 206, 314 186"
+          stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.7"/>
+
+    <!-- Sprout Base Stem Connection -->
+    <circle cx="256" cy="254" r="5" fill="#52b788"/>
+
+    <!-- ── AROMATIC STEAM WISPS (Fresh & Warm) ── -->
+    <!-- Left Wisp -->
+    <path d="M 198 238 C 190 216, 202 198, 194 176"
+          stroke="url(#steamGrad)" stroke-width="7" stroke-linecap="round" fill="none"/>
+
+    <!-- Center-Left Small Wisp -->
+    <path d="M 226 232 C 220 216, 226 204, 222 188"
+          stroke="url(#steamGrad)" stroke-width="4.5" stroke-linecap="round" fill="none" opacity="0.75"/>
+
+    <!-- Right Wisp -->
+    <path d="M 334 238 C 344 216, 332 198, 340 176"
+          stroke="url(#steamGrad)" stroke-width="7" stroke-linecap="round" fill="none"/>
+
+  </g>
+
+  <!-- ── VITALITY & SMART PLANNER BADGE (Terracotta/Amber Accent) ── -->
+  <g filter="url(#badgeGlow)">
+    <!-- Sunlit Terracotta circular badge (bottom right) -->
+    <circle cx="364" cy="364" r="46" fill="url(#warmSunGrad)"/>
+    <circle cx="364" cy="364" r="44.5" stroke="#ffffff" stroke-width="2" stroke-opacity="0.5" fill="none"/>
+
+    <!-- Inside the badge: Minimalist Calendar & Spark Icon -->
+    <!-- Spark / Four-point Star (vitality) -->
+    <path d="M 364 340
+             C 364 354, 350 364, 336 364
+             C 350 364, 364 374, 364 388
+             C 364 374, 378 364, 392 364
+             C 378 364, 364 354, 364 340 Z"
+          fill="#ffffff" opacity="0.95"/>
+
+    <!-- Center Core Dot -->
+    <circle cx="364" cy="364" r="3.5" fill="#f77f00"/>
+  </g>
+
+</svg>

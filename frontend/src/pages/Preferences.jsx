@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import PageFeatureGuide from '../components/PageFeatureGuide';
 import api from '../services/api';
+import { PAGE_GUIDES } from '../data/featureGuidesData';
 import { Plus, Trash2, Heart, ShieldAlert, Search } from 'lucide-react';
 
 const TYPE_CONFIG = {
@@ -248,8 +250,11 @@ const Preferences = () => {
                                                     transition: 'all 0.15s ease',
                                                 }}
                                             >
-                                                <div style={{ fontSize: 16, marginBottom: 4 }}>
-                                                    {val === 'FAVORITE' ? '❤️' : '🚫'}
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 6 }}>
+                                                    {val === 'FAVORITE'
+                                                        ? <Heart size={16} color={cfg.color} fill={form.preference_type === val ? cfg.color : 'none'} />
+                                                        : <ShieldAlert size={16} color={cfg.color} />
+                                                    }
                                                 </div>
                                                 <div style={{ fontSize: 12, fontWeight: 600, color: form.preference_type === val ? cfg.color : 'var(--tx-2)' }}>
                                                     {cfg.label}
@@ -290,6 +295,8 @@ const Preferences = () => {
                     </div>
                 </div>
             )}
+            {/* ── Panduan Fitur Tertanam ── */}
+            <PageFeatureGuide guide={PAGE_GUIDES['/preferences']} />
         </Layout>
     );
 };

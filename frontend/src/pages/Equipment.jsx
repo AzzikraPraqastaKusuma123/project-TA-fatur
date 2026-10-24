@@ -1,19 +1,21 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import PageFeatureGuide from '../components/PageFeatureGuide';
 import api from '../services/api';
-import { Check, X, Utensils } from 'lucide-react';
+import { PAGE_GUIDES } from '../data/featureGuidesData';
+import { Check, X, Utensils, Flame, ChefHat, Zap, Wrench } from 'lucide-react';
 
 const EQUIPMENT_ICONS = {
-    'Kompor Gas':      '🔥',
-    'Rice Cooker':     '🍚',
-    'Wajan':           '🍳',
-    'Panci':           '🫕',
-    'Oven':            '⬜',
-    'Blender':         '⚡',
-    'Kukusan':         '♨️',
-    'Talenan':         '🪵',
-    'Parutan':         '🧰',
-    'Pressure Cooker': '⏱️',
+    'Kompor Gas':      Flame,
+    'Rice Cooker':     Utensils,
+    'Wajan':           Utensils,
+    'Panci':           Utensils,
+    'Oven':            ChefHat,
+    'Blender':         Zap,
+    'Kukusan':         Flame,
+    'Talenan':         Utensils,
+    'Parutan':         Wrench,
+    'Pressure Cooker': Flame,
 };
 
 const Equipment = () => {
@@ -124,9 +126,20 @@ const Equipment = () => {
                                     opacity: isLoading ? 0.6 : 1,
                                 }}
                             >
-                                <div style={{ fontSize: 24, flexShrink: 0 }}>
-                                    {EQUIPMENT_ICONS[item.name] || '🍴'}
-                                </div>
+                                {(() => {
+                                    const EqIcon = EQUIPMENT_ICONS[item.name] || Utensils;
+                                    return (
+                                        <div style={{
+                                            width: 36, height: 36, borderRadius: 8,
+                                            background: isOwned ? 'rgba(22, 163, 74, 0.12)' : 'var(--bg-muted)',
+                                            border: `1px solid ${isOwned ? '#16a34a' : 'var(--border-color)'}`,
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            flexShrink: 0,
+                                        }}>
+                                            <EqIcon size={18} color={isOwned ? '#16a34a' : 'var(--tx-3)'} strokeWidth={2} />
+                                        </div>
+                                    );
+                                })()}
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                     <div style={{
                                         fontWeight: 600, fontSize: 13,
@@ -160,6 +173,8 @@ const Equipment = () => {
                     })}
                 </div>
             )}
+            {/* ── Panduan Fitur Tertanam ── */}
+            <PageFeatureGuide guide={PAGE_GUIDES['/equipment']} />
         </Layout>
     );
 };

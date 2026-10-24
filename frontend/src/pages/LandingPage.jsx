@@ -6,19 +6,19 @@ import {
 } from 'lucide-react';
 
 const FEATURES = [
-    { icon: CalendarDays, title: 'Jadwal Makan Otomatis',    desc: 'Sistem MILP mengoptimalkan menu harian secara cerdas sesuai anggaran dan nutrisi.' },
-    { icon: Wallet,       title: 'Kontrol Anggaran Ketat',   desc: 'Atur anggaran harian, mingguan, atau bulanan. Lihat utilisasi secara real-time.' },
-    { icon: Users,        title: 'Profil Nutrisi Keluarga',  desc: 'Kalkulasi kebutuhan kalori, protein, lemak, dan karbo per anggota keluarga.' },
-    { icon: Package,      title: 'Manajemen Stok Bahan',     desc: 'Pantau inventori, terima peringatan stok rendah, dan beli dengan cerdas.' },
-    { icon: Lightbulb,    title: 'Rekomendasi Menu AI',      desc: 'Mendapat rekomendasi resep berdasarkan stok, anggaran, dan preferensi diet.' },
-    { icon: BarChart3,    title: 'Analitik & Laporan',       desc: 'Grafik tren pengeluaran, nutrisi, dan riwayat rencana makan keluarga.' },
+    { icon: CalendarDays, title: 'Jadwal Makan Otomatis',    desc: 'Sistem pintar meracik menu harian secara seimbang sesuai anggaran belanja dan kebutuhan nutrisi.' },
+    { icon: Wallet,       title: 'Kontrol Anggaran Ketat',   desc: 'Atur anggaran harian, mingguan, atau bulanan. Pantau pengeluaran secara real-time.' },
+    { icon: Users,        title: 'Profil Nutrisi Keluarga',  desc: 'Kalkulasi kebutuhan kalori, protein, lemak, dan karbohidrat setiap anggota keluarga.' },
+    { icon: Package,      title: 'Manajemen Stok Dapur',     desc: 'Pantau stok bahan di rumah, dapatkan peringatan kadaluarsa, dan belanja lebih hemat.' },
+    { icon: Lightbulb,    title: 'Rekomendasi Menu Pintar',  desc: 'Rekomendasi resep otomatis berdasarkan bahan di rumah, anggaran, dan alergi keluarga.' },
+    { icon: BarChart3,    title: 'Analitik & Laporan',       desc: 'Pantau riwayat menu, tren pengeluaran, dan capaian nutrisi keluarga.' },
 ];
 
 const STATS = [
-    { value: '10+', label: 'Resep Tersedia' },
+    { value: '100+', label: 'Resep Nusantara' },
     { value: '3×', label: 'Slot Makan / Hari' },
-    { value: '100%', label: 'Berbasis Nutrisi' },
-    { value: 'MILP', label: 'Algoritma Optimasi' },
+    { value: '100%', label: 'Gizi Seimbang (AKG)' },
+    { value: 'Hemat', label: 'Sesuai Anggaran' },
 ];
 
 const LandingPage = () => {
@@ -41,12 +41,19 @@ const LandingPage = () => {
                 justifyContent: 'space-between',
                 transition: 'background var(--t-slow), border-color var(--t-slow)',
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <img src="/logo.jpg" alt="Logo" style={{
-                        width: 24, height: 24, borderRadius: 4,
-                        border: '1px solid var(--border-color)'
-                    }} />
-                    <span style={{ fontWeight: 700, fontSize: 14, letterSpacing: '-0.3px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <img
+                        src="/logo.svg"
+                        alt="MealPlanner"
+                        width={28}
+                        height={28}
+                        style={{
+                            borderRadius: 7,
+                            display: 'block',
+                            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))'
+                        }}
+                    />
+                    <span style={{ fontWeight: 700, fontSize: 15, letterSpacing: '-0.3px' }}>
                         MealPlanner
                     </span>
                 </div>
@@ -241,7 +248,7 @@ const LandingPage = () => {
                         {[
                             { step: '01', title: 'Daftarkan Keluarga', desc: 'Tambahkan data anggota keluarga: usia, berat, tinggi, dan tingkat aktivitas untuk menghitung kebutuhan nutrisi.' },
                             { step: '02', title: 'Atur Anggaran', desc: 'Tentukan budget makan harian/mingguan. Sistem akan menyesuaikan rekomendasi menu agar sesuai anggaran.' },
-                            { step: '03', title: 'Dapatkan Jadwal', desc: 'Algoritma MILP secara otomatis membuat jadwal menu optimal. Simpan dan ikuti — sesederhana itu.' },
+                            { step: '03', title: 'Dapatkan Jadwal', desc: 'Sistem pintar secara otomatis meracik jadwal menu seimbang dan hemat. Simpan dan nikmati bersama keluarga.' },
                         ].map((s, i) => (
                             <div key={s.step} style={{
                                 padding: '28px 28px',

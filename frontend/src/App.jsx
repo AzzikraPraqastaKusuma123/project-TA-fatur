@@ -23,6 +23,11 @@ import Settings       from './pages/Settings';
 import AdminUsers  from './pages/admin/AdminUsers';
 import DataCenter  from './pages/DataCenter';
 
+// New feature pages
+import Nutrition   from './pages/Nutrition';
+import Analytics   from './pages/Analytics';
+import HistoryPage from './pages/History';
+
 // Layout
 import Layout from './components/Layout';
 
@@ -84,9 +89,9 @@ function App() {
             {/* ── Coming Soon ── */}
             <Route path="/meal-plans" element={<ProtectedRoute><MealPlans /></ProtectedRoute>} />
             <Route path="/shopping"   element={<ProtectedRoute><Shopping /></ProtectedRoute>} />
-            <Route path="/nutrition"  element={<ProtectedRoute><ComingSoon title="Tracker Nutrisi"  desc="Pantau asupan nutrisi keluarga harian segera hadir." /></ProtectedRoute>} />
-            <Route path="/analytics"  element={<ProtectedRoute><ComingSoon title="Analitik"         desc="Grafik tren pengeluaran dan nutrisi historis segera hadir." /></ProtectedRoute>} />
-            <Route path="/history"    element={<ProtectedRoute><ComingSoon title="Riwayat"          desc="Log riwayat semua rencana makan segera hadir." /></ProtectedRoute>} />
+            <Route path="/nutrition"  element={<ProtectedRoute><Nutrition /></ProtectedRoute>} />
+            <Route path="/analytics"  element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+            <Route path="/history"    element={<ProtectedRoute><HistoryPage /></ProtectedRoute>} />
 
             {/* ── Protected: Admin ── */}
             <Route path="/admin"        element={<AdminRoute><ComingSoon title="Panel Admin"  desc="Dashboard admin dengan statistik sistem." /></AdminRoute>} />

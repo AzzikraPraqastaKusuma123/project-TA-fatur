@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
+import PageFeatureGuide from '../components/PageFeatureGuide';
 import api from '../services/api';
+import { PAGE_GUIDES } from '../data/featureGuidesData';
 import { Wallet, Check } from 'lucide-react';
 
 const PERIODS = [
@@ -249,6 +251,8 @@ const Budget = () => {
                     </div>
                 </div>
             </div>
+            {/* ── Panduan Fitur Tertanam ── */}
+            <PageFeatureGuide guide={PAGE_GUIDES['/budget']} />
         </Layout>
     );
 };

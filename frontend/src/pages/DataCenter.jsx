@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
+import PageFeatureGuide from '../components/PageFeatureGuide';
+import { PAGE_GUIDES } from '../data/featureGuidesData';
 import api from '../services/api';
 import {
     Database, Upload, RefreshCw, AlertTriangle, CheckCircle,
@@ -204,15 +206,15 @@ const SourceCard = ({ source, onUpload }) => {
                 )}
 
                 {/* License & source */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
                     {source.license && (
-                        <div style={{ fontSize: 11, color: 'var(--tx-3)' }}>
-                            📄 Lisensi: <strong>{source.license}</strong>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--tx-3)' }}>
+                            <FileText size={11} /> Lisensi: <strong style={{ color: 'var(--tx-2)' }}>{source.license}</strong>
                         </div>
                     )}
                     {source.last_imported_at && (
-                        <div style={{ fontSize: 11, color: 'var(--tx-3)' }}>
-                            🕒 Terakhir diimpor: {new Date(source.last_imported_at).toLocaleDateString('id-ID')}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11, color: 'var(--tx-3)' }}>
+                            <Clock size={11} /> Terakhir diimpor: {new Date(source.last_imported_at).toLocaleDateString('id-ID')}
                         </div>
                     )}
                 </div>
@@ -386,7 +388,7 @@ const DataCenter = () => {
     return (
         <Layout
             title="Data Center"
-            subtitle="Manajemen dataset, kualitas data, dan pipeline impor Fatrur"
+            subtitle="Manajemen dataset, kualitas data, dan pipeline impor MealPlanner"
             actions={
                 <button className="btn btn-outline btn-sm" onClick={loadAll}>
                     <RefreshCw size={14} /> Refresh
@@ -569,7 +571,7 @@ const DataCenter = () => {
                     <div className="alert alert-info" style={{ marginBottom: 16, fontSize: 13 }}>
                         <GitMerge size={15} />
                         <div>
-                            <strong>Pemetaan Bahan</strong> — Bahan dari file sumber yang perlu dicocokkan ke Master Bahan Fatrur.
+                            <strong>Pemetaan Bahan</strong> — Bahan dari file sumber yang perlu dicocokkan ke Master Bahan MealPlanner.
                             Pemetaan yang tidak disetujui <em>tidak akan digunakan</em> oleh system rekomendasi.
                         </div>
                     </div>
@@ -627,6 +629,8 @@ const DataCenter = () => {
                     .dashboard-stat-grid { grid-template-columns: 1fr 1fr !important; }
                 }
             `}</style>
+            {/* -- Panduan Fitur Tertanam -- */}
+            <PageFeatureGuide guide={PAGE_GUIDES['/data-center']} />
         </Layout>
     );
 };

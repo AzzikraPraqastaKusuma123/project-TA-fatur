@@ -4,7 +4,8 @@ import {
     LayoutDashboard, Users, Wallet, Package, Wrench,
     UtensilsCrossed, Lightbulb, CalendarDays, ShoppingCart,
     Heart, BarChart3, ChefHat, FlaskConical, LogOut,
-    Settings, History, Activity, UserCog, Leaf, Database
+    Settings, History, Activity, UserCog, Leaf, Database,
+    ChevronLeft
 } from 'lucide-react';
 
 const NAV_GROUPS = [
@@ -25,23 +26,23 @@ const NAV_GROUPS = [
     {
         label: 'Dapur',
         items: [
-            { to: '/inventory', icon: Package,         label: 'Stok Bahan' },
+            { to: '/inventory', icon: Package,         label: 'Stok Dapur' },
             { to: '/equipment', icon: Wrench,          label: 'Peralatan Masak' },
-            { to: '/recipes',   icon: UtensilsCrossed, label: 'Katalog Resep' },
+            { to: '/recipes',   icon: UtensilsCrossed, label: 'Koleksi Resep' },
         ]
     },
     {
         label: 'Perencanaan',
         items: [
-            { to: '/recommendation', icon: Lightbulb,    label: 'Buat Meal Plan' },
-            { to: '/meal-plans',     icon: CalendarDays, label: 'Jadwal Tersimpan' },
+            { to: '/recommendation', icon: Lightbulb,    label: 'Rancang Menu' },
+            { to: '/meal-plans',     icon: CalendarDays, label: 'Jadwal Menu' },
             { to: '/shopping',       icon: ShoppingCart, label: 'Daftar Belanja' },
         ]
     },
     {
         label: 'Analitik',
         items: [
-            { to: '/nutrition', icon: Activity,  label: 'Tracker Nutrisi' },
+            { to: '/nutrition', icon: Activity,  label: 'Status Nutrisi' },
             { to: '/analytics', icon: BarChart3, label: 'Laporan' },
             { to: '/history',   icon: History,   label: 'Riwayat' },
         ]
@@ -55,13 +56,13 @@ const ADMIN_GROUP = {
         { to: '/admin/users',        icon: UserCog,      label: 'Pengguna' },
         { to: '/admin/ingredients',  icon: Package,      label: 'Data Bahan' },
         { to: '/admin/recipes',      icon: ChefHat,      label: 'Data Resep' },
-        { to: '/data-center',        icon: Database,     label: 'Data Center' },
+        { to: '/data-center',        icon: Database,     label: 'Pusat Master Data' },
         { to: '/admin/optimization', icon: FlaskConical, label: 'Log Optimasi' },
     ]
 };
 
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, isCollapsed, onToggleCollapse }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -76,27 +77,40 @@ const Sidebar = ({ isOpen, onClose }) => {
         : '?';
 
     return (
-        <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <aside className={`sidebar ${isOpen ? 'open' : ''} ${isCollapsed ? 'collapsed' : ''}`}>
             {/* Brand */}
             <div className="sidebar-header">
                 <div className="sidebar-brand">
-                    <div style={{
-                        width: 32, height: 32,
-                        borderRadius: 8,
-                        background: 'var(--primary)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        flexShrink: 0,
-                    }}>
-                        <Leaf size={18} color="white" strokeWidth={2.5} />
-                    </div>
-                    <span className="sidebar-brand-name">Fatrur</span>
+                    <img
+                        src="/logo.svg"
+                        alt="MealPlanner"
+                        width={32}
+                        height={32}
+                        style={{
+                            borderRadius: 8,
+                            display: 'block',
+                            flexShrink: 0,
+                            filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.18))'
+                        }}
+                    />
+                    <span className="sidebar-brand-name">MealPlanner</span>
                 </div>
+                {onToggleCollapse && (
+                    <button
+                        type="button"
+                        className="sidebar-collapse-toggle"
+                        onClick={onToggleCollapse}
+                        title={isCollapsed ? "Perluas menu (Sidebar)" : "Perkecil menu (Sidebar)"}
+                    >
+                        <ChevronLeft size={15} />
+                    </button>
+                )}
             </div>
 
             <div className="sidebar-divider" />
 
             {/* Navigation */}
-            <nav className="sidebar-nav">
+            <nav className="sidebar-nav" data-tour="sidebar-nav">
                 {groups.map(group => (
                     <div key={group.label} className="nav-section">
                         <div className="nav-section-label">{group.label}</div>
@@ -106,10 +120,11 @@ const Sidebar = ({ isOpen, onClose }) => {
                                 to={to}
                                 end={to === '/dashboard'}
                                 onClick={onClose}
+                                title={isCollapsed ? label : undefined}
                                 className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
                             >
                                 <Icon size={16} strokeWidth={2} className="nav-icon" />
-                                {label}
+                                <span className="nav-label">{label}</span>
                             </NavLink>
                         ))}
                     </div>
@@ -121,14 +136,18 @@ const Sidebar = ({ isOpen, onClose }) => {
                 <NavLink
                     to="/settings"
                     onClick={onClose}
+                    title={isCollapsed ? "Pengaturan" : undefined}
                     className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}
                     style={{ marginBottom: 8 }}
                 >
                     <Settings size={16} strokeWidth={2} className="nav-icon" />
-                    Pengaturan
+                    <span className="nav-label">Pengaturan</span>
                 </NavLink>
 
-                <div className="user-row">
+                <div
+                    className="user-row"
+                    title={isCollapsed ? `${user?.name || 'Pengguna'} (${user?.role === 'ADMIN' ? 'Admin' : 'Anggota'})` : undefined}
+                >
                     <div className="user-avatar">{initials}</div>
                     <div className="user-info">
                         <div className="user-name">{user?.name || 'Pengguna'}</div>
