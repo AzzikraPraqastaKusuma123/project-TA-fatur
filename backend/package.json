@@ -8,6 +8,7 @@
     "dev": "nodemon server.js",
     "setup": "node database/setup.js",
     "seed": "node database/seed.js",
+    "export": "node database/export_db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
