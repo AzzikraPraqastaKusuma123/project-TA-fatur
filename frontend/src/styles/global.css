@@ -274,8 +274,10 @@ ul, ol {
 
 .page-body {
   flex: 1;
-  padding: var(--sp-6) var(--sp-8) var(--sp-12);
-  max-width: 1160px;
+  padding: 24px 32px 48px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 @keyframes pageIn {
@@ -557,9 +559,7 @@ ul, ol {
 }
 
 .topbar-subtitle {
-  font-size: var(--text-xs);
-  color: var(--tx-3);
-  margin-top: 2px;
+  display: none;
 }
 
 .topbar-right {

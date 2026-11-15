@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout';
 import PageFeatureGuide from '../components/PageFeatureGuide';
 import api from '../services/api';
@@ -6,8 +6,146 @@ import { PAGE_GUIDES } from '../data/featureGuidesData';
 import {
     Plus, Trash2, Package, Search, AlertTriangle,
     CheckCircle2, Lightbulb, Sparkles, RefreshCw,
-    ShieldAlert, Calendar, ArrowRight, Check
+    ShieldAlert, Calendar, ArrowRight, Check, BarChart3, PieChart
 } from 'lucide-react';
+
+/* ── Category Config ───────────────────────────────────────── */
+const CAT_ICONS = {
+    PROTEIN:     '🍗',
+    SAYURAN:     '🥦',
+    BUMBU:       '🧄',
+    KARBOHIDRAT: '🌾',
+    LEMAK:       '🧈',
+    OTHER:       '🥡',
+};
+
+/* ── Mini Donut/Bar Chart ── */
+const CategoryChart = ({ items }) => {
+    const catOrder = ['PROTEIN', 'SAYURAN', 'BUMBU', 'KARBOHIDRAT', 'LEMAK', 'OTHER'];
+    const CAT_COLORS_HEX = {
+        PROTEIN:     '#3b82f6',
+        SAYURAN:     '#10b981',
+        BUMBU:       '#f59e0b',
+        KARBOHIDRAT: '#8b5cf6',
+        LEMAK:       '#ec4899',
+        OTHER:       '#6b7280',
+    };
+
+    const catCounts = useMemo(() => {
+        const counts = {};
+        items.forEach(i => {
+            const c = i.category || 'OTHER';
+            counts[c] = (counts[c] || 0) + 1;
+        });
+        return counts;
+    }, [items]);
+
+    const total = items.length;
+    if (total === 0) return null;
+
+    const cats = catOrder.filter(c => catCounts[c] > 0);
+
+    // Build donut segments
+    let cumulative = 0;
+    const radius = 46;
+    const cx = 60, cy = 60;
+    const circumference = 2 * Math.PI * radius;
+
+    const segments = cats.map(c => {
+        const pct = catCounts[c] / total;
+        const len = pct * circumference;
+        const offset = circumference - cumulative * circumference;
+        cumulative += pct;
+        return { cat: c, pct, len, offset, color: CAT_COLORS_HEX[c] };
+    });
+
+    return (
+        <div style={{
+            display: 'grid', gridTemplateColumns: '130px 1fr',
+            gap: 16, alignItems: 'center',
+        }}>
+            {/* Donut */}
+            <div style={{ position: 'relative', width: 120, height: 120, margin: '0 auto' }}>
+                <svg width={120} height={120} style={{ transform: 'rotate(-90deg)' }}>
+                    <circle cx={cx} cy={cy} r={radius} fill="none" stroke="var(--bg-muted)" strokeWidth={16} />
+                    {segments.map((s, i) => (
+                        <circle
+                            key={s.cat}
+                            cx={cx} cy={cy} r={radius}
+                            fill="none"
+                            stroke={s.color}
+                            strokeWidth={16}
+                            strokeDasharray={`${s.len} ${circumference - s.len}`}
+                            strokeDashoffset={s.offset}
+                            style={{ transition: 'stroke-dasharray 0.5s ease' }}
+                        />
+                    ))}
+                </svg>
+                <div style={{
+                    position: 'absolute', inset: 0,
+                    display: 'flex', flexDirection: 'column',
+                    alignItems: 'center', justifyContent: 'center',
+                }}>
+                    <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--tx-1)' }}>{total}</div>
+                    <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--tx-4)', textTransform: 'uppercase' }}>Bahan</div>
+                </div>
+            </div>
+
+            {/* Legend */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+                {cats.map(c => {
+                    const pct = Math.round((catCounts[c] / total) * 100);
+                    return (
+                        <div key={c} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                            <div style={{
+                                width: 10, height: 10, borderRadius: 3, flexShrink: 0,
+                                background: CAT_COLORS_HEX[c],
+                            }} />
+                            <span style={{ fontSize: 11, color: 'var(--tx-3)', flex: 1, fontWeight: 500 }}>
+                                {CAT_ICONS[c] || '•'} {c}
+                            </span>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--tx-2)' }}>
+                                {catCounts[c]} ({pct}%)
+                            </span>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+/* ── Status Bar Chart ── */
+const StatusChart = ({ safeCount, expiringCount, expiredCount }) => {
+    const total = safeCount + expiringCount + expiredCount;
+    if (total === 0) return null;
+
+    const bars = [
+        { label: 'Segar / Aman',       value: safeCount,     color: '#16a34a', emoji: '✅' },
+        { label: 'Dekat Kadaluarsa',    value: expiringCount,  color: '#ea580c', emoji: '⚠️' },
+        { label: 'Sudah Kadaluarsa',    value: expiredCount,   color: '#dc2626', emoji: '❌' },
+    ].filter(b => b.value > 0);
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            {bars.map(b => (
+                <div key={b.label}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, marginBottom: 4 }}>
+                        <span style={{ color: 'var(--tx-3)', fontWeight: 500 }}>{b.emoji} {b.label}</span>
+                        <span style={{ color: b.color, fontWeight: 700 }}>{b.value} bahan</span>
+                    </div>
+                    <div style={{ height: 8, borderRadius: 999, background: 'var(--bg-muted)', overflow: 'hidden' }}>
+                        <div style={{
+                            width: `${(b.value / total) * 100}%`, height: '100%',
+                            background: b.color, borderRadius: 999,
+                            transition: 'width 0.5s ease',
+                        }} />
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+};
 
 const CAT_COLORS = {
     PROTEIN:     { color: '#3b82f6', bg: '#eff6ff', border: '#bfdbfe' },
@@ -17,6 +155,36 @@ const CAT_COLORS = {
     LEMAK:       { color: '#ec4899', bg: '#fdf4ff', border: '#f5d0fe' },
     OTHER:       { color: '#6b7280', bg: '#f9fafb', border: '#e5e7eb' },
 };
+
+/* ── Ingredient visual emoji ── */
+const INGREDIENT_EMOJI = {
+    'beras':         '🌾',
+    'minyak':        '🛢️',
+    'telur':         '🥚',
+    'bawang merah':  '🧅',
+    'bawang putih':  '🧄',
+    'garam':         '🧂',
+    'ayam':          '🍗',
+    'bayam':         '🥬',
+    'cabai':         '🌶️',
+    'tomat':         '🍅',
+    'wortel':        '🥕',
+    'kentang':       '🥔',
+    'ikan':          '🐟',
+    'udang':         '🦐',
+    'tahu':          '🫘',
+    'tempe':         '🫘',
+    'susu':          '🥛',
+    'tepung':        '🌾',
+};
+
+function getIngredientEmoji(name) {
+    const lower = (name || '').toLowerCase();
+    for (const [key, emoji] of Object.entries(INGREDIENT_EMOJI)) {
+        if (lower.includes(key)) return emoji;
+    }
+    return '🥡';
+}
 
 const Inventory = () => {
     const [items, setItems]             = useState([]);
@@ -223,6 +391,38 @@ const Inventory = () => {
                 </div>
             )}
 
+            {/* ── Visual Charts ── */}
+            {!loading && items.length > 0 && (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16, marginBottom: 20 }}>
+                    {/* Category Donut */}
+                    <div className="card" style={{ padding: '16px 20px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                            <BarChart3 size={16} color="var(--primary)" />
+                            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--tx-1)' }}>Distribusi Kategori</div>
+                        </div>
+                        <CategoryChart items={items} />
+                    </div>
+
+                    {/* Status bar chart */}
+                    <div className="card" style={{ padding: '16px 20px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                            <PieChart size={16} color="var(--primary)" />
+                            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--tx-1)' }}>Status Kesegaran Bahan</div>
+                        </div>
+                        <StatusChart
+                            safeCount={safeCount}
+                            expiringCount={expiringCount}
+                            expiredCount={expiredCount}
+                        />
+                        <div style={{ marginTop: 14, padding: '10px 12px', borderRadius: 8, background: 'var(--bg-muted)', border: '1px solid var(--border-color)' }}>
+                            <div style={{ fontSize: 11.5, color: 'var(--tx-3)', lineHeight: 1.5 }}>
+                                💡 <strong>Tips:</strong> Bahan yang mendekati kadaluarsa diprioritaskan saat rekomendasi resep mingguan.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* ── Main Inventory Card ── */}
             <div className="card">
                 {/* Toolbar */}
@@ -358,8 +558,11 @@ const Inventory = () => {
                                     return (
                                         <tr key={item.id}>
                                             <td>
-                                                <div style={{ fontWeight: 700, fontSize: 13.5, color: 'var(--tx-1)' }}>
-                                                    {item.ingredient_name}
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                    <span style={{ fontSize: 20, flexShrink: 0 }}>{getIngredientEmoji(item.ingredient_name)}</span>
+                                                    <div style={{ fontWeight: 700, fontSize: 13.5, color: 'var(--tx-1)' }}>
+                                                        {item.ingredient_name}
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td>

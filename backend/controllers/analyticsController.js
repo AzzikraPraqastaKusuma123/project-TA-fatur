@@ -9,7 +9,7 @@ const getSpendingTrend = async (req, res) => {
         const [rows] = await db.query(`
             SELECT 
                 DATE_FORMAT(created_at, '%Y-%m') AS month,
-                DATE_FORMAT(created_at, '%b %Y')  AS label,
+                MAX(DATE_FORMAT(created_at, '%b %Y')) AS label,
                 SUM(estimated_cost) AS total_spent,
                 AVG(estimated_cost) AS avg_spent,
                 COUNT(*)            AS plan_count,
@@ -37,7 +37,7 @@ const getTopRecipes = async (req, res) => {
                 r.id, r.name, r.total_calories, r.total_cost,
                 r.category, r.image_url,
                 COUNT(mpi.id) AS usage_count,
-                SUM(mpi.servings) AS total_servings
+                SUM(COALESCE(r.servings, 1)) AS total_servings
             FROM meal_plan_items mpi
             JOIN meal_plans mp ON mpi.meal_plan_id = mp.id
             JOIN recipes r ON mpi.recipe_id = r.id
